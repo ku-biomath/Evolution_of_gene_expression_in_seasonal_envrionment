@@ -1,5 +1,5 @@
 # Evolution_of_gene_expression_in_seasonal_envrionment
-This is the script for the paper "Evolution of gene expression in seasonal environments".　The scripts process gene expression data, perform clustering and comparative analyses, detect rhythmic patterns, and examine evolutionary rates.
+This is the script for the paper "Evolution of gene expression in seasonal environments." The scripts process gene expression data, perform clustering and comparative analyses, detect rhythmic patterns, and examine evolutionary rates.
 
 # Overview
 ## 1. Data processing
