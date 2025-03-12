@@ -65,7 +65,7 @@ We modeled the evolutionary rates (dN, dS, and dN/dS) as the response variable a
 - Multiple comparisons (Steel-Dwass test) of dN/dS
 To examine the seasonal difference of sequence divergence, We classified genes that exhibited annual periodicity across both species and tissues into four groups based on their expression peak timing (winter or growing seasons) and tissue specificity (leaves or buds) and compared the extent of protein sequence divergence across these groups.
 
-**Input**: gene expression data matrix, rhythmicity information estimated by RAIN, gene expression similarity metrics calculated in section 5, and list of evolutionary rates across genes.
+**Input**: gene expression data matrix, rhythmicity information estimated by RAIN, gene expression similarity metrics calculated in section 5, and list of evolutionary rates across genes.  
 **Output**: Statistical significance of the linear regression and the multiple comparison of evolutionary rates.
 
 
