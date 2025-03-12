@@ -1,10 +1,10 @@
 # R script for hierarchical clustering of gene expression profiles
 # Shuichi N Kudo
-# Last update 2025. 2. 26
+# Last update 2025. 3. 12
 # R version 4.3.1
 #
 # functions ####################################################################
-mean_individual=function(GE_matrix){
+mean_individual=function(GE_matrix){ # calculate the mean expression level across individuals
   n_genes = dim(GE_matrix)[1]
   sample_names = colnames(GE_matrix)
   common_names = unique(substr(sample_names,1,11))
@@ -19,7 +19,7 @@ mean_individual=function(GE_matrix){
   return(ave_mat)
 }
 
-my_func_hc = function(x,k){
+my_func_hc = function(x,k){ # clustering function
   hc = pheatmap(x,
                 cluster_cols=F,cluster_rows=T,scale="none",
                 clustering_distance_cols = "euclidean", 
@@ -38,6 +38,7 @@ library(factoextra)
 library(Rmisc)
 
 # clustering samples ###########################################################
+# This code block perform a hierarchical clustering of samples
 # Input #
 data_all = read.csv("data/datamatrix_getmm_1to1_common_LeLgQgQa.csv",row.names=1)
 ann = read.csv("data/annotation_with_ClusterID.csv")
@@ -53,7 +54,7 @@ y = t(scale(t(x)))
 Nsample=dim(x)[2]
 Ngene=dim(x)[1]
 
-# determine optimal number of clusters
+# determine optimal number of clusters (Total Within-cluster Squere Sum of Error)
 wss_test = fviz_nbclust(t(y),my_func_hc,method="wss",k.max=20,nboot=100,verbose=interactive())
 Nsample=dim(y)[1]
 Ngene=dim(y)[2]
@@ -70,7 +71,7 @@ plot(g1)
 ggsave(paste("figures/Fig2_clustering_samples_elbow_plot_",data_label,".png",sep=""),plot=g1,height=5,width=5)
 
 
-# annotation
+# annotation (sample ID, species name, tissue, and sampling date)
 sample_ls = colnames(y)
 species = substr(sample_ls,1,2)
 tissue = substr(sample_ls,4,4)
@@ -98,6 +99,7 @@ for(i in 1:dim(annotation_col_table)[1]){
 annotation_col_table$new_leaf_ratio[is.na(annotation_col_table$new_leaf_ratio)] = 0
 annotation_col_table$new_leaf_ratio[annotation_col_table$Tissue=="B"] = 0
 
+# color settings
 month_palette =  colorRampPalette(c(rep(c("#b5f1c6","#fbfec9","#ca3fb9","#292f8e"),3)))(36)[13:24]
 annotation_colors = list(Month=c("Mar"=month_palette[1],"Apr"=month_palette[2],"May"=month_palette[3],
                                  "Jun"=month_palette[4],"Jul"=month_palette[5],"Aug"=month_palette[6],
@@ -130,7 +132,7 @@ ggplot(climate_info_in_data_sorted,aes(x=SampleID,y=Temperature,color=Temperatur
 ggsave("figures/Fig2/temperature_label_gradient.pdf",height=2,width=6)
 
 
-# heatmap
+# heatmap with clustering
 heatmap = pheatmap(y,
                    cluster_cols=T,cluster_rows=F,
                    scale="none",
@@ -166,9 +168,10 @@ write.csv(clustering_result,"tables/Fig2/summary_clustering_sorted.csv")
 
 
 # clustering genes #############################################################
+# This code block perform a hierarchical clustering of genes
 # data
 data_all = read.csv("data/datamatrix_getmm_1to1_common_LeLgQgQa.csv",row.names=1)
-ann_Le = read.csv("data/annotation_Lthed_r1.0.1_HC.csv")
+ann_Le = read.csv("data/annotation_Lthed_r1.0.1_HC.csv") # annotation information such as Gene ID of L. edulis and Q. glauca genomes, TAIR ID of A.thaliana orthologs, 
 ann_Qg = read.csv("data/annotation_Qgl_r1.0.1_HC.csv")
 gene_table_in_data = data_all[,1:2]
 data = data_all[,3:dim(data_all)[2]]
@@ -232,7 +235,7 @@ collabs =  paste(substr(colnames(y_sorted),6,7),substr(colnames(y_sorted),8,9),s
 collabs[seq(2,length(collabs),2)] = ""
 
 # phenology label 
-phenology_data = read.csv("data/18_datpheno_Lit.csv")
+phenology_data = read.csv("data/18_datpheno_Lit.csv") # Table of phenological observation including the ratio of newly-flushed leaves and opening flowers
 phenology_data["date"] = as.Date(paste(phenology_data$year,phenology_data$month,phenology_data$day,sep="-"))
 phenology_data["floweropening_ratio"] = phenology_data$floweropening/phenology_data$total
 phenology_data["new_leaf_ratio"] = phenology_data$new_leaf/phenology_data$total
@@ -285,7 +288,7 @@ heatmap = pheatmap(y_sorted,
                    show_rownames = FALSE, show_colnames = T,
                    breaks = seq(-2,3,length.out=256),
                    main = paste(Ngene,"genes, ",Nsample,"samples, ","scale=row, ","dist=euclidean, ","method=ward.D2",sep=""),
-                   filename = "figures/Fig2/gene_clustering_euclid_wardD2.tiff"
+                   filename = "figures/gene_clustering_euclid_wardD2.tiff"
 )
 
 # calculate the number of species in which the significant periodicity was detected 
@@ -350,7 +353,7 @@ for(i in 1:length(Tis_ls)){
                      show_rownames = FALSE, show_colnames = T,
                      breaks = seq(-2,3,length.out=256),
                      main = paste(Ngene,"genes, ",Nsample,"samples, ","scale=row, ","dist=euclidean, ","method=ward.D2",sep=""),
-                     filename = paste("figures/Fig2/gene_clustering_euclid_wardD2_with_rain_",Tis,".tiff",sep="")
+                     filename = paste("figures/gene_clustering_euclid_wardD2_with_rain_",Tis,".tiff",sep="")
   )
   
   
@@ -379,13 +382,13 @@ summary_gene_cluster = data.frame(OrthogroupID = row.names(x_sorted),
                                   ClusterID = ClusterID_new)
 
 summary_gene_cluster = cbind(summary_gene_cluster,x_sorted)
-write.csv(summary_gene_cluster,"tables/Fig2/gene_clustering_sortbyOrthogroupID.csv",row.names=F)
+write.csv(summary_gene_cluster,"tables/gene_clustering_sortbyOrthogroupID.csv",row.names=F)
 
 
 # Comparison of climatic factors across clusters ###############################
 # Input
-climate_infomation = read.csv("tables/Fig2/climate_information.csv",row.names=1)
-clustering_information = read.csv("tables/Fig2/sample_set_summary.csv")
+climate_infomation = read.csv("tables/climate_information.csv",row.names=1)
+clustering_information = read.csv("tables/sample_set_summary.csv")
 #all(clustering_information$SampleID==climate_infomation$SampleID) # --> TRUE
 climate_infomation["Cluster.Symbol"] = clustering_information$Cluster.Symbol
 
@@ -448,7 +451,7 @@ for(i in 1:length(test_set)){
   }
 }
 
-write.csv(res_table_all,"tables/Fig2/Statistical_test_for_climate_vs_cluster.csv",row.names=F)
+write.csv(res_table_all,"tables/Statistical_test_for_climate_vs_cluster.csv",row.names=F)
 
 # Statistics
 cluster_set = c("A","B","C","D","E")
@@ -512,7 +515,7 @@ for(i in 1:length(climate_set)){
     theme(aspect.ratio=2,axis.text.y = element_blank())+
     labs(x="Cluster",y=climate)+
     coord_flip()
-  ggsave(paste("figures/Fig2/climate_vs_cluster_",climate,"_ver2.pdf",sep=""),height=6,width=3)
+  ggsave(paste("figures/climate_vs_cluster_",climate,"_ver2.pdf",sep=""),height=6,width=3)
 }
 
 
