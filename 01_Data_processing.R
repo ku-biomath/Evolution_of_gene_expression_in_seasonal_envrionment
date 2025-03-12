@@ -4,7 +4,7 @@
 # R version 4.3.1
 #
 # functions ####################################################################
-reconst_GE_matrix = function(dataset,scale="Expected_count"){
+reconst_GE_matrix = function(dataset,scale="Expected_count"){ # generate a matrix (gene ID X sample ID) from RSEM output
   if(scale=="Expected_count"){
     matrix_data = select(dataset,Sample_id,Gene_id,Expected_count) %>% pivot_wider(names_from=Sample_id,id_cols=Gene_id,values_from=Expected_count) %>% data.frame(row.names=1)
     
@@ -17,7 +17,7 @@ reconst_GE_matrix = function(dataset,scale="Expected_count"){
   return(matrix_data)
 }
 
-sort_mat=function(GE_matrix_A){
+sort_mat=function(GE_matrix_A){ # sort the column of the gene expression matrix by the order of species, bud, and month
   Sp_list = substr(colnames(GE_matrix_A),1,2)
   Sp_unq = unique(Sp_list)
   n_Sp = length(Sp_unq)
