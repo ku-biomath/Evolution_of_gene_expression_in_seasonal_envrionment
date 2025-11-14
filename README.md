@@ -76,3 +76,5 @@ Each script is designed to be run in R. Ensure that all required packages are in
 Shuichi N Kudo, Yuka Ikezaki, Junko Kusumi, Hideki Hirakawa, Sachiko Isobe, Akiko Satake (2025) The evolution of gene expression in seasonal environments, eLife 14:RP107309
 https://doi.org/10.7554/eLife.107309.2
 
+# Licence
+All the R notebooks are licensed under Creative Commons CC-BY 4.0.
