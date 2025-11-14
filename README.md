@@ -72,3 +72,7 @@ To examine the seasonal difference of sequence divergence, We classified genes t
 # Usage
 Each script is designed to be run in R. Ensure that all required packages are installed before executing the scripts. Detailed instructions on data input formats and dependencies are provided within each script.
 
+# Citation
+Shuichi N KudoYuka IkezakiJunko KusumiHideki HirakawaSachiko IsobeAkiko Satake2025The evolution of gene expression in seasonal environments eLife 14:RP107309
+https://doi.org/10.7554/eLife.107309.2
+
